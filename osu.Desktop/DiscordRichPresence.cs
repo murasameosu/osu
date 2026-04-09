@@ -57,7 +57,7 @@ namespace osu.Desktop
 
         private readonly RichPresence presence = new RichPresence
         {
-            Assets = new Assets { LargeImageKey = "osu_logo_lazer" },
+            Assets = new Assets { LargeImageKey = "murasame_logo" },
             Timestamps = Timestamps.Now,
             Secrets = new Secrets
             {
