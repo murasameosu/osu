@@ -28,6 +28,8 @@ namespace osu.Game.Online
         /// </summary>
         public string APIUrl { get; set; } = string.Empty;
 
+        public string AvatarUrl { get; set; } = string.Empty;
+
         /// <summary>
         /// The root URL for the service handling beatmap submission. Does not include a trailing slash.
         /// </summary>
