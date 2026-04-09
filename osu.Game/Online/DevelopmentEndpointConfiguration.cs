@@ -7,12 +7,14 @@ namespace osu.Game.Online
     {
         public DevelopmentEndpointConfiguration()
         {
-            WebsiteUrl = APIUrl = @"https://dev.ppy.sh";
+            WebsiteUrl = @"http://localhost:5173";
+            APIUrl = @"https://lazer.murasame.local";
             APIClientSecret = @"3LP2mhUrV89xxzD1YKNndXHEhWWCRLPNKioZ9ymT";
             APIClientID = "5";
-            SpectatorUrl = $@"{APIUrl}/signalr/spectator";
-            MultiplayerUrl = $@"{APIUrl}/signalr/multiplayer";
-            MetadataUrl = $@"{APIUrl}/signalr/metadata";
+            AvatarUrl = @"https://a.murasame.local";
+            SpectatorUrl = "https://spectator.murasame.local/spectator";
+            MultiplayerUrl = "https://spectator.murasame.local/multiplayer";
+            MetadataUrl = "https://spectator.murasame.local/metadata";
             BeatmapSubmissionServiceUrl = $@"{APIUrl}/beatmap-submission";
         }
     }
