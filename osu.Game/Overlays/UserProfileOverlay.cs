@@ -119,8 +119,8 @@ namespace osu.Game.Overlays
                     new RanksSection(),
                     //new MedalsSection(),
                     new HistoricalSection(),
-                    new BeatmapsSection(),
-                    new KudosuSection()
+                    // new BeatmapsSection(),
+                    // new KudosuSection()
                 }
                 : Array.Empty<ProfileSection>();
 
