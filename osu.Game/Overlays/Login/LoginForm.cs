@@ -64,7 +64,7 @@ namespace osu.Game.Overlays.Login
                         },
                         username = new OsuTextBox
                         {
-                            InputProperties = new TextInputProperties(TextInputType.Username, false),
+                            InputProperties = new TextInputProperties(TextInputType.Text),
                             PlaceholderText = UsersStrings.LoginUsername.ToLower(),
                             RelativeSizeAxes = Axes.X,
                             Text = api.ProvidedUsername,
