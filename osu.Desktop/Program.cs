@@ -21,9 +21,9 @@ namespace osu.Desktop
     public static class Program
     {
 #if DEBUG
-        private const string base_game_name = @"osu-development";
+        private const string base_game_name = @"murasame-development";
 #else
-        private const string base_game_name = @"osu";
+        private const string base_game_name = @"murasame";
 #endif
 
         private static LegacyTcpIpcProvider? legacyIpc;
