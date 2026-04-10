@@ -148,7 +148,8 @@ namespace osu.Game.Online.API
         /// <param name="email">The email to create the account with.</param>
         /// <param name="username">The username to create the account with.</param>
         /// <param name="password">The password to create the account with.</param>
+        /// <param name="inviteCode">The inviteCode to create the account with.</param>
         /// <returns>Any errors encoutnered during account creation.</returns>
-        RegistrationRequest.RegistrationRequestErrors? CreateAccount(string email, string username, string password);
+        RegistrationRequest.RegistrationRequestErrors? CreateAccount(string email, string username, string password, string inviteCode);
     }
 }

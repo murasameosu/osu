@@ -31,10 +31,12 @@ namespace osu.Game.Overlays.AccountCreation
         private ErrorTextFlowContainer usernameDescription = null!;
         private ErrorTextFlowContainer emailAddressDescription = null!;
         private ErrorTextFlowContainer passwordDescription = null!;
+        private ErrorTextFlowContainer inviteCodeDescription = null!;
 
         private OsuTextBox usernameTextBox = null!;
         private OsuTextBox emailTextBox = null!;
         private OsuPasswordTextBox passwordTextBox = null!;
+        private OsuTextBox inviteCodeTextBox = null!;
 
         [Resolved]
         private IAPIProvider api { get; set; } = null!;
@@ -109,6 +111,17 @@ namespace osu.Game.Overlays.AccountCreation
                             RelativeSizeAxes = Axes.X,
                             AutoSizeAxes = Axes.Y
                         },
+                        inviteCodeTextBox = new OsuTextBox
+                        {
+                            PlaceholderText = "招待コード",
+                            RelativeSizeAxes = Axes.X,
+                            TabbableContentContainer = this
+                        },
+                        inviteCodeDescription = new ErrorTextFlowContainer
+                        {
+                            RelativeSizeAxes = Axes.X,
+                            AutoSizeAxes = Axes.Y
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.X,
@@ -133,7 +146,7 @@ namespace osu.Game.Overlays.AccountCreation
                 loadingLayer = new LoadingLayer(true)
             };
 
-            textboxes = new[] { usernameTextBox, emailTextBox, passwordTextBox };
+            textboxes = new[] { usernameTextBox, emailTextBox, passwordTextBox, inviteCodeTextBox };
 
             usernameDescription.AddText(AccountCreationStrings.UsernameDescription);
 
@@ -146,6 +159,9 @@ namespace osu.Game.Overlays.AccountCreation
 
             passwordTextBox.Current.BindValueChanged(_ => updateCharacterCheckTextColour(), true);
             characterCheckText.DrawablePartsRecreated += _ => updateCharacterCheckTextColour();
+
+            inviteCodeDescription.AddText(AccountCreationStrings.InviteCodeDescription1 + "\n");
+            inviteCodeDescription.AddText(AccountCreationStrings.InviteCodeDescription2);
 
             apiState = api.State.GetBoundCopy();
         }
@@ -178,6 +194,7 @@ namespace osu.Game.Overlays.AccountCreation
             usernameDescription.ClearErrors();
             emailAddressDescription.ClearErrors();
             passwordDescription.ClearErrors();
+            inviteCodeDescription.ClearErrors();
 
             loadingLayer.Show();
 
@@ -188,7 +205,7 @@ namespace osu.Game.Overlays.AccountCreation
 
                 try
                 {
-                    errors = api.CreateAccount(emailTextBox.Text, usernameTextBox.Text, passwordTextBox.Text);
+                    errors = api.CreateAccount(emailTextBox.Text, usernameTextBox.Text, passwordTextBox.Text, inviteCodeTextBox.Text);
                     success = errors == null;
                 }
                 catch (Exception)
@@ -207,17 +224,18 @@ namespace osu.Game.Overlays.AccountCreation
                                 usernameDescription.AddErrors(errors.User.Username);
                                 emailAddressDescription.AddErrors(errors.User.Email);
                                 passwordDescription.AddErrors(errors.User.Password);
+                                inviteCodeDescription.AddErrors(errors.User.InviteCode);
                             }
 
                             if (!string.IsNullOrEmpty(errors.Message))
-                                passwordDescription.AddErrors(new[] { errors.Message });
+                                inviteCodeDescription.AddErrors(new[] { errors.Message });
 
                             if (!string.IsNullOrEmpty(errors.Redirect))
-                                game?.OpenUrlExternally($"{errors.Redirect}?username={usernameTextBox.Text}&email={emailTextBox.Text}", LinkWarnMode.NeverWarn);
+                                game?.OpenUrlExternally($"{errors.Redirect}?username={usernameTextBox.Text}&email={emailTextBox.Text}&code={inviteCodeTextBox.Text}", LinkWarnMode.NeverWarn);
                         }
                         else
                         {
-                            passwordDescription.AddErrors(new[] { "Something happened... but we're not sure what." });
+                            inviteCodeDescription.AddErrors(new[] { "Something happened... but we're not sure what." });
                         }
 
                         registerShake.Shake();

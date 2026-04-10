@@ -197,7 +197,7 @@ namespace osu.Game.Online.API
 
         public IChatClient GetChatClient() => new TestChatClientConnector(this);
 
-        public RegistrationRequest.RegistrationRequestErrors? CreateAccount(string email, string username, string password)
+        public RegistrationRequest.RegistrationRequestErrors? CreateAccount(string email, string username, string password, string inviteCode)
         {
             Thread.Sleep(200);
             return null;

@@ -398,7 +398,7 @@ namespace osu.Game.Online.API
 
         public IChatClient GetChatClient() => new WebSocketChatClient(this);
 
-        public RegistrationRequest.RegistrationRequestErrors CreateAccount(string email, string username, string password)
+        public RegistrationRequest.RegistrationRequestErrors CreateAccount(string email, string username, string password, string inviteCode)
         {
             Debug.Assert(State.Value == APIState.Offline);
 
@@ -408,7 +408,8 @@ namespace osu.Game.Online.API
                 Method = HttpMethod.Post,
                 Username = username,
                 Email = email,
-                Password = password
+                Password = password,
+                InviteCode = inviteCode
             };
 
             try

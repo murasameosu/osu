@@ -29,7 +29,7 @@ namespace osu.Game.Overlays
 
         public AccountCreationOverlay()
         {
-            Size = new Vector2(620, 450);
+            Size = new Vector2(620, 520);
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
         }

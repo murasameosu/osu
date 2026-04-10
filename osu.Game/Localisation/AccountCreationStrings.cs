@@ -49,6 +49,16 @@ namespace osu.Game.Localisation
         /// </summary>
         public static LocalisableString EmailDescription2 => new TranslatableString(getKey(@"email_description_2"), @" Make sure to get it right!");
 
+        /// <summary>
+        ///  "This is the code required to join this server!"
+        /// </summary>
+        public static LocalisableString InviteCodeDescription1 => new TranslatableString(getKey(@"invite_code_description_1"), @"This is the code required to join this server!");
+
+        /// <summary>
+        ///  "Please get it from a friend who has already joined!"
+        /// </summary>
+        public static LocalisableString InviteCodeDescription2 => new TranslatableString(getKey(@"invite_code_description_2"), @"Please get it from a friend who has already joined!");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

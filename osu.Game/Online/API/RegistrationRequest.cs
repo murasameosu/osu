@@ -11,12 +11,14 @@ namespace osu.Game.Online.API
         internal string Username = string.Empty;
         internal string Email = string.Empty;
         internal string Password = string.Empty;
+        internal string InviteCode = string.Empty;
 
         protected override void PrePerform()
         {
             AddParameter(@"user[username]", Username);
             AddParameter(@"user[user_email]", Email);
             AddParameter(@"user[password]", Password);
+            AddParameter(@"user[invite_code]", InviteCode);
 
             AddHeader(@"Accept", @"application/json");
 
@@ -47,6 +49,9 @@ namespace osu.Game.Online.API
 
                 [JsonProperty("password")]
                 public string[] Password = Array.Empty<string>();
+
+                [JsonProperty("invite_code")]
+                public string[] InviteCode = Array.Empty<string>();
             }
         }
     }
