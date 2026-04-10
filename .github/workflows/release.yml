@@ -1,0 +1,153 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*-lazer"
+
+env:
+  DOTNET_VERSION: "8.0.x"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      semver: ${{ steps.v.outputs.semver }}
+      nuget: ${{ steps.v.outputs.nuget }}
+      velopack: ${{ steps.v.outputs.velopack }}
+      assembly: ${{ steps.v.outputs.assembly }}
+      file: ${{ steps.v.outputs.file }}
+
+    steps:
+      - id: v
+        shell: bash
+        run: |
+          VERSION="${{ github.ref_name }}"
+          SEMVER=${VERSION#v}
+          BASE=${SEMVER%%-*}
+
+          IFS='.' read -ra P <<< "$BASE"
+          while [ ${#P[@]} -lt 4 ]; do P+=("0"); done
+
+          NUM="${P[0]}.${P[1]}.${P[2]}.${P[3]}"
+          NUGET="${P[0]}.${P[1]}.${P[2]}"
+          VELO="$NUGET"
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "semver=$SEMVER" >> $GITHUB_OUTPUT
+          echo "nuget=$NUGET" >> $GITHUB_OUTPUT
+          echo "velopack=$VELO" >> $GITHUB_OUTPUT
+          echo "assembly=$NUM" >> $GITHUB_OUTPUT
+          echo "file=$NUM" >> $GITHUB_OUTPUT
+
+  build:
+    needs: version
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            runtime: win-x64
+            name: windows
+            exe: "osu!.exe"
+
+          - os: macos-latest
+            runtime: osx-x64
+            name: macos-intel
+            exe: "osu!"
+
+          - os: macos-latest
+            runtime: osx-arm64
+            name: macos-arm
+            exe: "osu!"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install Velopack
+        run: dotnet tool install -g vpk
+
+      - name: Restore
+        run: dotnet restore osu.Desktop/osu.Desktop.csproj --verbosity minimal
+
+      - name: Publish
+        run: |
+          dotnet publish osu.Desktop/osu.Desktop.csproj \
+            -c Release \
+            -r ${{ matrix.runtime }} \
+            --self-contained false \
+            --no-restore \
+            -o publish/${{ matrix.runtime }} \
+            -p:Version=${{ needs.version.outputs.semver }} \
+            -p:FileVersion=${{ needs.version.outputs.file }} \
+            -p:AssemblyVersion=${{ needs.version.outputs.assembly }}
+
+      - name: macOS chmod
+        if: matrix.os == 'macos-latest'
+        run: chmod +x publish/${{ matrix.runtime }}/${{ matrix.exe }}
+
+      - name: Velopack pack
+        run: |
+          vpk pack \
+            -u "osu-lazer" \
+            -v "${{ needs.version.outputs.velopack }}" \
+            -p "publish/${{ matrix.runtime }}" \
+            -e "${{ matrix.exe }}" \
+            --packAuthors "osu!" \
+            --packTitle "osu! lazer" \
+            -i "osu.Desktop/lazer.ico"
+
+      - name: Collect
+        run: |
+          mkdir -p out
+          shopt -s globstar nullglob
+          cp -r publish/${{ matrix.runtime }}/* out/ || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: out/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Prepare
+        run: |
+          mkdir -p release
+          shopt -s globstar nullglob
+          cp artifacts/**/* release/ || true
+
+          if [ -z "$(ls -A release)" ]; then
+            echo "empty release"
+            exit 1
+          fi
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          files: release/**
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
