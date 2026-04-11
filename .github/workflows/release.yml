@@ -103,11 +103,11 @@ jobs:
         shell: bash
         run: |
           ICON_ARG=""
-          
+
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             ICON_ARG="-i osu.Desktop/lazer.ico"
           fi
-          
+
           vpk pack \
             -u "osu-lazer" \
             -v "${{ needs.version.outputs.velopack }}" \
@@ -118,9 +118,9 @@ jobs:
             $ICON_ARG
 
       - name: Collect
+        shell: bash
         run: |
           mkdir -p out
-          shopt -s globstar nullglob
           cp -r publish/${{ matrix.runtime }}/* out/ || true
 
       - uses: actions/upload-artifact@v4
