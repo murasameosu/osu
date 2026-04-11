@@ -55,6 +55,22 @@ namespace osu.Game.Online.Chat
             else
             {
                 isTrustedDomain = url.StartsWith(api.Endpoints.WebsiteUrl, StringComparison.Ordinal);
+
+                if (!isTrustedDomain)
+                {
+                    try
+                    {
+                        var uri = new Uri(url);
+                        string hostStr = uri.Host;
+
+                        if (hostStr.Equals("ppy.sh", StringComparison.OrdinalIgnoreCase) ||
+                            hostStr.EndsWith(".ppy.sh", StringComparison.OrdinalIgnoreCase))
+                        {
+                            isTrustedDomain = true;
+                        }
+                    }
+                    catch (UriFormatException) { }
+                }
             }
 
             if (!url.CheckIsValidUrl())
