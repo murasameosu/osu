@@ -89,6 +89,7 @@ namespace osu.Game.Tests.Visual.Online
                 entryScreen.ChildrenOfType<OsuTextBox>().ElementAt(0).Text = "new_user";
                 entryScreen.ChildrenOfType<OsuTextBox>().ElementAt(1).Text = "new.user@fake.mail";
                 entryScreen.ChildrenOfType<OsuTextBox>().ElementAt(2).Text = "password";
+                entryScreen.ChildrenOfType<OsuTextBox>().ElementAt(3).Text = "invite_code";
             });
             AddStep("click button", () => accountCreation.ChildrenOfType<ScreenEntry>().Single()
                                                          .ChildrenOfType<SettingsButton>().Single().TriggerClick());
