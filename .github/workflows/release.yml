@@ -115,13 +115,13 @@ jobs:
           fi
 
           vpk pack \
-            -u "osu-lazer" \
+            -u "murasame" \
             -v "${{ needs.version.outputs.velopack }}" \
             -p "publish/${{ matrix.runtime }}" \
             -e "${{ matrix.exe }}" \
             -c "$CHANNEL" \
-            --packAuthors "osu!" \
-            --packTitle "osu! lazer" \
+            --packAuthors "murasame! Team" \
+            --packTitle "murasame! (lazer)" \
             $ICON_ARG
 
       - name: Normalize asset names
@@ -136,9 +136,9 @@ jobs:
 
           if [ "${{ matrix.os }}" == "macos-latest" ]; then
             if [ "${{ matrix.runtime }}" == "osx-x64" ]; then
-              mv *-Portable.zip osu.app.Intel.zip 2>/dev/null || true
+              mv *-Portable.zip murasame.app.Intel.zip 2>/dev/null || true
             else
-              mv *-Portable.zip osu.app.Apple.Silicon.zip 2>/dev/null || true
+              mv *-Portable.zip murasame.app.Apple.Silicon.zip 2>/dev/null || true
             fi
             rm *.pkg 2>/dev/null || true
           fi
@@ -182,7 +182,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
+          name: murasame! ${{ github.ref_name }}
           files: release/**
           generate_release_notes: true
         env:
