@@ -103,9 +103,15 @@ jobs:
         shell: bash
         run: |
           ICON_ARG=""
+          CHANNEL="win"
 
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             ICON_ARG="-i osu.Desktop/lazer.ico"
+            CHANNEL="win"
+          elif [ "${{ matrix.runtime }}" == "osx-x64" ]; then
+            CHANNEL="osx-x64"
+          elif [ "${{ matrix.runtime }}" == "osx-arm64" ]; then
+            CHANNEL="osx-arm64"
           fi
 
           vpk pack \
@@ -113,9 +119,29 @@ jobs:
             -v "${{ needs.version.outputs.velopack }}" \
             -p "publish/${{ matrix.runtime }}" \
             -e "${{ matrix.exe }}" \
+            -c "$CHANNEL" \
             --packAuthors "osu!" \
             --packTitle "osu! lazer" \
             $ICON_ARG
+
+      - name: Normalize asset names
+        shell: bash
+        run: |
+          cd Releases || exit 0
+
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            mv *Setup.exe install.exe 2>/dev/null || true
+            rm *-Portable.zip 2>/dev/null || true
+          fi
+
+          if [ "${{ matrix.os }}" == "macos-latest" ]; then
+            if [ "${{ matrix.runtime }}" == "osx-x64" ]; then
+              mv *-Portable.zip osu.app.Intel.zip 2>/dev/null || true
+            else
+              mv *-Portable.zip osu.app.Apple.Silicon.zip 2>/dev/null || true
+            fi
+            rm *.pkg 2>/dev/null || true
+          fi
 
       - name: Collect
         shell: bash
