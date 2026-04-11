@@ -100,7 +100,14 @@ jobs:
         run: chmod +x publish/${{ matrix.runtime }}/${{ matrix.exe }}
 
       - name: Velopack pack
+        shell: bash
         run: |
+          ICON_ARG=""
+          
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            ICON_ARG="-i osu.Desktop/lazer.ico"
+          fi
+          
           vpk pack \
             -u "osu-lazer" \
             -v "${{ needs.version.outputs.velopack }}" \
@@ -108,7 +115,7 @@ jobs:
             -e "${{ matrix.exe }}" \
             --packAuthors "osu!" \
             --packTitle "osu! lazer" \
-            -i "osu.Desktop/lazer.ico"
+            $ICON_ARG
 
       - name: Collect
         run: |
