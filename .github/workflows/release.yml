@@ -121,9 +121,9 @@ jobs:
         shell: bash
         run: |
           mkdir -p out
-          cp -r publish/${{ matrix.runtime }}/* out/ || true
+          cp -r Releases/* out/ || true
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.name }}
           path: out/
@@ -136,16 +136,16 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: artifacts
           merge-multiple: true
 
       - name: Prepare
+        shell: bash
         run: |
           mkdir -p release
-          shopt -s globstar nullglob
-          cp artifacts/**/* release/ || true
+          cp -r artifacts/* release/ || true
 
           if [ -z "$(ls -A release)" ]; then
             echo "empty release"
