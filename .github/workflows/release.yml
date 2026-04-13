@@ -93,7 +93,8 @@ jobs:
             -o publish/${{ matrix.runtime }} \
             -p:Version=${{ needs.version.outputs.semver }} \
             -p:FileVersion=${{ needs.version.outputs.file }} \
-            -p:AssemblyVersion=${{ needs.version.outputs.assembly }}
+            -p:AssemblyVersion=${{ needs.version.outputs.assembly }} \
+            -p:OfficialBuild=true
 
       - name: macOS chmod
         if: matrix.os == 'macos-latest'
