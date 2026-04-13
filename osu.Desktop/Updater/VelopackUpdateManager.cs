@@ -55,7 +55,7 @@ namespace osu.Desktop.Updater
 
             try
             {
-                IUpdateSource updateSource = new GithubSource(@"https://github.com/murasameosu/osu", null, ReleaseStream.Value == Game.Configuration.ReleaseStream.Tachyon);
+                IUpdateSource updateSource = new GithubSource(@"https://github.com/murasameosu/osu", null, false);
                 Velopack.UpdateManager updateManager = new Velopack.UpdateManager(updateSource, new UpdateOptions
                 {
                     AllowVersionDowngrade = true
